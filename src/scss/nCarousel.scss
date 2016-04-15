@@ -1,0 +1,66 @@
+@import "compass";
+
+.nCarousel {
+  overflow: visible;
+  position: relative;
+}
+
+.nCarousel__viewport {
+  overflow: visible;
+  position: relative;
+  margin: 0 !important;
+}
+
+.nCarousel__items {
+  overflow: hidden;
+}
+
+.nCarousel__item {
+  float: left;
+  img {
+    vertical-align: top;
+  }
+}
+
+.nCarousel__arrow {
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 !important;
+  color: #fff;
+  text-align: center;
+  line-height: 40px;
+  background: #000;
+}
+
+.nCarousel__prev {
+  left: 0;
+}
+
+.nCarousel__next {
+  right: 0;
+}
+
+.nCarousel__pointers {
+  margin: 6px 0 0 !important;
+  font-size: 0;
+  line-height: 0;
+  text-align: center;
+}
+
+.nCarousel__pointer {
+  $size: 12px;
+  display: inline-block;
+  width: $size;
+  height: $size;
+  margin: 8px 10px 0 !important;
+  background: #999;
+  border-radius: $size / 2;
+  vertical-align: top;
+  cursor: pointer;
+  &.is-active {
+    background: #000;
+    cursor: default;
+  }
+}

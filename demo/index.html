@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>nCarousel</title>
+
+<link rel="stylesheet" href="../dst/nCarousel.css">
+<style>
+body {
+  overflow-x: hidden;
+  margin: 0;
+}
+#demo-1 {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.demo-1__item {
+  width: 800px;
+  margin: 0 10px;
+}
+.demo-1__item img {
+  width: 100%;
+  height: auto;
+}
+</style>
+
+</head>
+<body>
+
+<div id="demo-1">
+  <div class="demo-1__item">
+    <img src="//placehold.jp/800x400.png" alt="" />
+  </div>
+  <div class="demo-1__item">
+    <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
+  </div>
+  <div class="demo-1__item">
+    <img src="//placekitten.com/800/400" alt="" />
+  </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script src="../dst/nCarousel.js"></script>
+<script>
+$(function(){
+  
+  $(window).load(function(){
+    $('#demo-1').nCarousel({
+      duration: 400
+      ,easing: 'swing'
+      ,surplus: 0
+      //,interval: 2000
+    });
+  });
+  
+});
+</script>
+
+</body>
+</html>
