@@ -4,7 +4,8 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat'),
     livereload = require('gulp-livereload'),
-    sourcemaps = require('gulp-sourcemaps');
+    sourcemaps = require('gulp-sourcemaps'),
+    rename = require('gulp-rename');
 
 
 gulp.task('default', ['watch']);
@@ -33,9 +34,13 @@ gulp.task('js_compile', function() {
     ])
     .pipe(plumber())
     .pipe(sourcemaps.init())
-    .pipe(concat('nCarousel.js'))
-    .pipe(uglify())
+    .pipe(concat('jquery.nCarousel.js'))
+    .pipe(gulp.dest('dst'))
+    .pipe(uglify({preserveComments: 'some'}))
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest('dst'))
     .pipe(sourcemaps.write())
+    .pipe(rename({suffix: '.sourcemap'}))
     .pipe(gulp.dest('dst'));
 });
 

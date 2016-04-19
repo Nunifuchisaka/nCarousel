@@ -6,43 +6,53 @@
 
 <title>nCarousel</title>
 
-<link rel="stylesheet" href="../dst/nCarousel.css">
+<link rel="stylesheet" href="../dst/jquery.nCarousel.css">
 <style>
 body {
   overflow-x: hidden;
   margin: 0;
 }
-#demo-1 {
-  max-width: 800px;
-  margin: 0 auto;
+
+h1 {
+  text-align: center;
 }
-.demo-1__item {
+
+.carousel-1 {
+  max-width: 800px;
+  margin: 80px auto;
+}
+.carousel-1__item {
   width: 800px;
   margin: 0 10px;
 }
-.demo-1__item img {
+.carousel-1__item img {
   width: 100%;
   height: auto;
 }
 </style>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script src="../dst/jquery.nCarousel.min.sourcemap.js"></script>
+
 </head>
 <body>
 
-<div id="demo-1">
-  <div class="demo-1__item">
+
+<h1>nCarousel</h1>
+
+
+<div id="demo-1" class="carousel-1">
+  <div class="carousel-1__item">
     <img src="//placehold.jp/800x400.png" alt="" />
   </div>
-  <div class="demo-1__item">
+  <div class="carousel-1__item">
     <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
   </div>
-  <div class="demo-1__item">
+  <div class="carousel-1__item">
     <img src="//placekitten.com/800/400" alt="" />
   </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-<script src="../dst/nCarousel.js"></script>
 <script>
 $(function(){
   
@@ -57,6 +67,36 @@ $(function(){
   
 });
 </script>
+
+
+
+<div id="demo-2" class="carousel-1">
+  <div class="carousel-1__item">
+    <img src="//placehold.jp/800x400.png" alt="" />
+  </div>
+  <div class="carousel-1__item">
+    <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
+  </div>
+  <div class="carousel-1__item">
+    <img src="//placekitten.com/800/400" alt="" />
+  </div>
+</div>
+
+<script>
+$(function(){
+  
+  $(window).load(function(){
+    $('#demo-2').nCarousel({
+      duration: 400
+      ,easing: 'swing'
+      ,surplus: 1
+      //,interval: 2000
+    });
+  });
+  
+});
+</script>
+
 
 </body>
 </html>
