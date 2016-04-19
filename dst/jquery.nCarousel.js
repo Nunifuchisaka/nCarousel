@@ -25,6 +25,19 @@ $.fn.nCarousel = function( opts ){
 }
 
 
+/*
+## functions
+*/
+
+function Position(e){
+  var x = (e.pageX)?e.pageX:e.originalEvent.touches[0].pageX;
+  var y = (e.pageY)?e.pageY:e.originalEvent.touches[0].pageY;
+  x = Math.floor(x);
+  y = Math.floor(y);
+  return {'x':x , 'y':y};
+}
+
+
 
 /*
 ## nCarousel
@@ -36,12 +49,20 @@ function nCarousel( opts ) {
     duration: 400,
     easing: 'swing',
     surplus: 1,
-    interval: 0
+    interval: 0,
+    swipe: true,
+    draggable: true,
+    touchThresholdMagnification: 10
   }, opts);
   
   this.backup = {};
   this.lock = false;
   this.activeResponsive = false;
+  
+  this.touchStartX = -1;
+  this.touchMoveX = -1;
+  this.touchStartItemsMarginLeft = -1;
+  this.touchThreshold = 0;
   
   this.$window = $(window);
   this.$el = $(opts.el);
@@ -61,7 +82,6 @@ function nCarousel( opts ) {
     });
   
   this.maxWidth = parseInt( this.$el.css('max-width') );
-  //console.log('maxWidth', this.maxWidth);
   
   this.init();
   
@@ -84,6 +104,13 @@ function nCarousel( opts ) {
 }
 
 
+nCarousel.prototype.setTouchThreshold = function(){
+  if( !this.opts.swipe && !this.opts.draggable ) return false;
+  
+  this.touchThreshold = this.$item.outerWidth(false) * (this.opts.touchThresholdMagnification / 100);
+}
+
+
 
 /*
 ### window resize
@@ -93,7 +120,6 @@ nCarousel.prototype.windowResize = function(){
   this.windowWidth = this.$window.width();
   if( this.maxWidth < this.$window.width() ){
     if( this.activeResponsive ) {
-      console.log('レスポンシブを解除');
       this.activeResponsive = false;
       this.resetItemWidth('auto');
     }
@@ -101,7 +127,6 @@ nCarousel.prototype.windowResize = function(){
   }
   var self = this;
   this.activeResponsive = true;
-  console.log('レスポンシブを適用');
   this.resetItemWidth( this.$parent.width() );
 }
 
@@ -121,6 +146,8 @@ nCarousel.prototype.resetItemWidth = function( width ){
       marginLeft: (this.opts.surplus * -1 * this.itemWidth * this.current) + this.marginCorrect,
       width: (this.opts.surplus * 2 + 1) * this.itemsWidth
     });
+  
+  this.setTouchThreshold();
 }
 
 
@@ -188,6 +215,9 @@ nCarousel.prototype.init = function(){
     self.animation( next );
     return false;
   });
+  
+  this.setTouchThreshold();
+  this.setSwipeEvent();
 }
 
 
@@ -197,30 +227,51 @@ nCarousel.prototype.init = function(){
 */
 
 nCarousel.prototype.animation = function( next ){
-  var self = this;
   if( this.lock ) return false;
-  if( 0 === this.opts.surplus ) {
-    if( next < 0 || this.$item.length - 1 < next ) return false;
-  }
+  
+  var self = this,
+      result = true,
+      duration = this.opts.duration,
+      easing = this.opts.easing;
   
   this.lock = true;
-  this.current = next;
-  if( self.current < self.$item.length * self.opts.surplus ) {
-    self.current += self.$item.length;
-  } else if( self.current >= self.$item.length * (self.opts.surplus + 1) ) {
-    self.current -= self.$item.length;
+  
+  if( 0 === this.opts.surplus ) {
+    if( next < 0 || this.$item.length - 1 < next ) result = false;
+  }
+  
+  if( result ) {
+    
+    this.current = next;
+    if( self.current < self.$item.length * self.opts.surplus ) {
+      self.current += self.$item.length;
+    } else if( self.current >= self.$item.length * (self.opts.surplus + 1) ) {
+      self.current -= self.$item.length;
+    }
+    
+  } else {
+    
+    if( next < 0 ) {
+      next = 0;
+    } else if( this.$item.length - 1 < next ) {
+      next = this.$item.length - 1;
+    }
+    easing = 'linear';
+    
   }
   
   self.pointerActive();
   
   this.$items.stop(true,false).animate({
     'marginLeft': self.itemWidth * next * -1 + this.marginCorrect
-  }, this.opts.duration, this.opts.easing, function(){
+  }, duration, easing, function(){
     self.$items.css('marginLeft', self.itemWidth * self.current * -1 + self.marginCorrect);
     self.lock = false;
   });
   
   this.arrowVisibilities();
+  
+  return result;
 }
 
 
@@ -253,6 +304,98 @@ nCarousel.prototype.arrowVisibilities = function(){
 nCarousel.prototype.pointerActive = function(){
   this.$pointer.filter('.is-active').removeClass('is-active');
   this.$pointer.eq(this.current - this.$item.length * this.opts.surplus).addClass('is-active');
+}
+
+
+
+/*
+### swipe
+*/
+
+/*
+#### set swipe event
+*/
+
+nCarousel.prototype.setSwipeEvent = function(){
+  
+  //swipe
+  if( this.opts.swipe ) {
+    this.$items.on('touchstart.ncarousel', $.proxy(this.swipeStart, this));
+  }
+  
+  //draggable
+  if( this.opts.draggable ) {
+    this.$items.on('mousedown.ncarousel', $.proxy(this.swipeStart, this));
+  }
+}
+
+/*
+#### swipe start
+*/
+
+nCarousel.prototype.swipeStart = function(event){
+  event.preventDefault();
+  if( this.lock ) return false;
+  
+  var pos = Position(event);
+  this.touchStartX = pos.x;
+  this.touchMoveX = pos.x;
+  this.touchStartItemsMarginLeft = parseInt( this.$items.css('marginLeft') );
+  
+  //on move & end
+  if( this.opts.swipe ) {
+    this.$items.on('touchmove.ncarousel', $.proxy(this.swipeMove, this));
+    this.$items.on('touchend.ncarousel', $.proxy(this.swipeEnd, this));
+    this.$items.on('touchcancel.ncarousel', $.proxy(this.swipeEnd, this));
+  }
+  if( this.opts.draggable ) {
+    this.$items.on('mousemove.ncarousel', $.proxy(this.swipeMove, this));
+    this.$items.on('mouseup.ncarousel', $.proxy(this.swipeEnd, this));
+    this.$items.on('mouseleave.ncarousel', $.proxy(this.swipeEnd, this));
+  }
+}
+
+/*
+#### swipe move
+*/
+
+nCarousel.prototype.swipeMove = function(event){
+  event.preventDefault();
+  var pos = Position(event);
+  this.touchMoveX = pos.x;
+  var diffX = this.touchMoveX - this.touchStartX;
+  this.$items.css('marginLeft', this.touchStartItemsMarginLeft + diffX);
+}
+
+/*
+#### swipe end
+*/
+
+nCarousel.prototype.swipeEnd = function(event){
+  //off move & end
+  if( this.opts.swipe ) {
+    this.$items.off('touchmove.ncarousel');
+    this.$items.off('touchend.ncarousel');
+    this.$items.off('touchcancel.ncarousel');
+  }
+  if( this.opts.draggable ) {
+    this.$items.off('mousemove.ncarousel');
+    this.$items.off('mouseup.ncarousel');
+    this.$items.off('mouseleave.ncarousel');
+  }
+  
+  var result = this.current;
+  if( this.touchMoveX - this.touchThreshold > this.touchStartX ) {
+    result = this.current - 1;
+  } else if( this.touchMoveX + this.touchThreshold < this.touchStartX ) {
+    result = this.current + 1;
+  }
+  this.animation( result );
+  
+  //reset
+  this.touchStartX = -1;
+  this.touchMoveX = -1;
+  this.touchStartItemsMarginLeft = -1;
 }
 
 })(jQuery, this, this.document);

@@ -31,7 +31,8 @@ h1 {
 }
 </style>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
 <script src="../dst/jquery.nCarousel.min.sourcemap.js"></script>
 
 </head>
@@ -59,9 +60,10 @@ $(function(){
   $(window).load(function(){
     $('#demo-1').nCarousel({
       duration: 400
-      ,easing: 'swing'
+      ,easing: 'easeOutExpo'
       ,surplus: 0
       //,interval: 2000
+      ,draggable: true
     });
   });
   
