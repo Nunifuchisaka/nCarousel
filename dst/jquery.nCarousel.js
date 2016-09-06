@@ -14,7 +14,6 @@
 //
 $.fn.nCarousel = function( opts ){
   var self = this;
-  
   return this.each(function( i, el ){
     opts = $.extend({
       i: i,
@@ -47,7 +46,8 @@ function nCarousel( opts ) {
   var self = this;
   this.opts = $.extend({
     duration: 400,
-    easing: 'swing',
+    easing: "swing",
+    thumbnail: false,
     surplus: 1,
     interval: 0,
     swipe: true,
@@ -127,7 +127,8 @@ nCarousel.prototype.windowResize = function(){
   }
   var self = this;
   this.activeResponsive = true;
-  this.resetItemWidth( this.$parent.width() );
+  this.resetItemWidth( this.$viewport.width() );
+  //this.resetItemWidth( this.$parent.width() );
 }
 
 
@@ -191,18 +192,25 @@ nCarousel.prototype.init = function(){
   this.current = this.$item.length * this.opts.surplus;
   
   //arrows
-  this.$viewport.append(
+  this.$el.append(
     '<div class="nCarousel__arrow nCarousel__prev"></div>' + 
     '<div class="nCarousel__arrow nCarousel__next"></div>'
   );
-  this.$prev = this.$viewport.children('.nCarousel__prev');
-  this.$next = this.$viewport.children('.nCarousel__next');
+  this.$prev = this.$el.children('.nCarousel__prev');
+  this.$next = this.$el.children('.nCarousel__next');
+  //this.$prev = this.$viewport.children('.nCarousel__prev');
+  //this.$next = this.$viewport.children('.nCarousel__next');
   this.arrowVisibilities();
   
   //add pointers
+  //var pointersHTML = (this.opts.thumbnail)?'<div class="nCarousel__pointers is-thumbnail">':'<div class="nCarousel__pointers">';
   var pointersHTML = '<div class="nCarousel__pointers">';
   for( var i=0; i<this.$item.length; i++ ){
-    pointersHTML += '<div class="nCarousel__pointer"></div>'
+    if(this.opts.thumbnail){
+      pointersHTML += '<div class="nCarousel__pointer is-thumbnail">' + this.$item.eq(i).html() + '</div>';
+    } else {
+      pointersHTML += '<div class="nCarousel__pointer"></div>';
+    }
   }
   pointersHTML += '</div>';
   
@@ -318,6 +326,8 @@ nCarousel.prototype.pointerActive = function(){
 
 nCarousel.prototype.setSwipeEvent = function(){
   
+  this.$items.find("a").click(function(){return false});
+  
   //swipe
   if( this.opts.swipe ) {
     this.$items.on('touchstart.ncarousel', $.proxy(this.swipeStart, this));
@@ -389,6 +399,11 @@ nCarousel.prototype.swipeEnd = function(event){
     result = this.current - 1;
   } else if( this.touchMoveX + this.touchThreshold < this.touchStartX ) {
     result = this.current + 1;
+  } else {
+    var href = $(event.target).closest("a").attr("href");
+    if(href != undefined) {
+      window.location.href = href;
+    }
   }
   this.animation( result );
   

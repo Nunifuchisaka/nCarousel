@@ -1,0 +1,45 @@
+body {
+  overflow-x: hidden;
+  margin: 0;
+}
+
+h1 {
+  text-align: center;
+}
+
+
+/*
+## .demo-tab-1
+*/
+
+.demo-tab-1 {
+  margin: 80px 0;
+}
+
+.demo-tab-1__contents {
+  
+}
+
+
+/*
+## .demo-nav-1
+*/
+
+.demo-nav-1 {
+  
+}
+
+.demo-nav-1__items {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.demo-nav-1__item {
+  display: inline-block;
+}
+
+.demo-nav-1__item a {
+  display: block;
+  padding: 1em 1.5em;
+}
