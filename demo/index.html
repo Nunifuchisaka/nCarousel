@@ -100,5 +100,34 @@ $(function(){
 </script>
 
 
+
+<div id="demo-3" class="carousel-1">
+  <div class="carousel-1__item">
+    <img src="//placehold.jp/800x400.png" alt="" />
+  </div>
+  <div class="carousel-1__item">
+    <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
+  </div>
+  <div class="carousel-1__item">
+    <img src="//placekitten.com/800/400" alt="" />
+  </div>
+</div>
+
+<script>
+$(function(){
+  
+  $(window).load(function(){
+    $('#demo-3').nCarousel({
+      duration: 400
+      ,easing: 'swing'
+      ,surplus: 1
+      ,pointers: false
+    });
+  });
+  
+});
+</script>
+
+
 </body>
 </html>

@@ -52,6 +52,7 @@ function nCarousel( opts ) {
     interval: 0,
     swipe: true,
     draggable: true,
+    pointers: true,
     touchThresholdMagnification: 10
   }, opts);
   
@@ -89,7 +90,7 @@ function nCarousel( opts ) {
   this.windowResize();
   this.resizeTimer = false;
   this.$window.resize(function(){
-    if( self.resizeTimer !== false ) {
+    if( self.resizeTimer !== false ){
       clearTimeout(self.resizeTimer);
     }
     self.resizeTimer = setTimeout($.proxy(self.windowResize, self), 100);
@@ -200,21 +201,22 @@ nCarousel.prototype.init = function(){
   this.arrowVisibilities();
   
   //add pointers
-  var pointersHTML = '<div class="nCarousel__pointers">';
-  for( var i=0; i<this.$item.length; i++ ){
-    pointersHTML += '<div class="nCarousel__pointer"></div>'
+  if(this.opts.pointers){
+    var pointersHTML = '<div class="nCarousel__pointers">';
+    for( var i=0; i<this.$item.length; i++ ){
+      pointersHTML += '<div class="nCarousel__pointer"></div>'
+    }
+    pointersHTML += '</div>';
+    this.$el.append(pointersHTML);
+    this.$pointer = this.$el.find('.nCarousel__pointer');
+    this.$pointer.eq(0).addClass('is-active');
+    this.$el.on('click', '.nCarousel__pointer', function(e){
+      var index = self.$pointer.index(this),
+          next  = index + self.$item.length * self.opts.surplus;
+      self.animation( next );
+      return false;
+    });
   }
-  pointersHTML += '</div>';
-  
-  this.$el.append(pointersHTML);
-  this.$pointer = this.$el.find('.nCarousel__pointer');
-  this.$pointer.eq(0).addClass('is-active');
-  this.$el.on('click', '.nCarousel__pointer', function(e){
-    var index = self.$pointer.index(this),
-        next  = index + self.$item.length * self.opts.surplus;
-    self.animation( next );
-    return false;
-  });
   
   this.setTouchThreshold();
   this.setSwipeEvent();
@@ -260,7 +262,9 @@ nCarousel.prototype.animation = function( next ){
     
   }
   
-  self.pointerActive();
+  if(this.opts.pointers){
+    self.pointerActive();
+  }
   
   this.$items.stop(true,false).animate({
     'marginLeft': self.itemWidth * next * -1 + this.marginCorrect
