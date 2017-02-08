@@ -2,11 +2,11 @@
 $.fn.nCarousel = function( opts ){
   var self = this;
   return this.each(function( i, el ){
-    opts = $.extend({
+    var _opts = $.extend({
       i: i,
       el: el
     }, opts);
-    new nCarousel(opts);
+    new nCarousel(_opts);
   });
 }
 
@@ -149,14 +149,12 @@ nCarousel.prototype.init = function(){
   this.$el.addClass('nCarousel');
   this.$el.html(
     '<div class="nCarousel__viewport">'
-    + '<div class="nCarousel__items">'
     + this.backup.html
-    + '</div>'
     + '</div>'
   );
   
   this.$viewport = this.$el.children('.nCarousel__viewport');
-  this.$items = this.$viewport.children('.nCarousel__items');
+  this.$items = this.$viewport.children();
   this.$item = this.$items.children();
   this.$item.addClass('nCarousel__item');
   
@@ -177,16 +175,15 @@ nCarousel.prototype.init = function(){
   this.$_item = this.$items.children();
   
   this.current = this.$item.length * this.opts.surplus;
+  this.$el.addClass("is-current-" + (this.current - this.$item.length * this.opts.surplus));
   
   //arrows
-  this.$el.append(
+  this.$viewport.append(
     '<div class="nCarousel__arrow nCarousel__prev"></div>' + 
     '<div class="nCarousel__arrow nCarousel__next"></div>'
   );
-  this.$prev = this.$el.children('.nCarousel__prev');
-  this.$next = this.$el.children('.nCarousel__next');
-  //this.$prev = this.$viewport.children('.nCarousel__prev');
-  //this.$next = this.$viewport.children('.nCarousel__next');
+  this.$prev = this.$viewport.children('.nCarousel__prev');
+  this.$next = this.$viewport.children('.nCarousel__next');
   this.arrowVisibilities();
   
   //add pointers
@@ -235,6 +232,8 @@ nCarousel.prototype.animation = function( next ){
     if( next < 0 || this.$item.length - 1 < next ) result = false;
   }
   
+  this.$el.removeClass("is-current-" + (this.current - this.$item.length * this.opts.surplus));
+  
   if( result ) {
     
     this.current = next;
@@ -254,6 +253,8 @@ nCarousel.prototype.animation = function( next ){
     easing = 'linear';
     
   }
+  
+  this.$el.addClass("is-current-" + (this.current - this.$item.length * this.opts.surplus));
   
   self.pointerActive();
   
