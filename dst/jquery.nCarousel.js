@@ -53,13 +53,20 @@ function nCarousel( opts ) {
     swipe: true,
     draggable: true,
     pointers: true,
-    touchThresholdMagnification: 10
+    touchThresholdMagnification: 10,
+    pauseWithMouseenter: true
   }, opts);
+  
+  /*
+  pauseWithMouseenter：マウスエンターで一時停止
+  */
   
   this.backup = {};
   this.lock = false;
   this.activeResponsive = false;
   
+  this.mouseenter = false;
+  this.swiping = false;
   this.touchStartX = -1;
   this.touchMoveX = -1;
   this.touchStartItemsMarginLeft = -1;
@@ -67,9 +74,6 @@ function nCarousel( opts ) {
   
   this.$window = $(window);
   this.$el = $(opts.el);
-  this.backup.html = this.$el.html();
-  this.$el.empty();
-  
   this.$parent = this.$el.parent();
   
   this.$el
@@ -80,6 +84,10 @@ function nCarousel( opts ) {
     .on('click', '.nCarousel__next', function(){
       self.animation( self.current + 1 );
       return false;
+    })
+    .on({
+      'mouseenter': function(){ self.mouseenter = true },
+      'mouseleave': function(){ self.mouseenter = false }
     });
   
   this.maxWidth = parseInt( this.$el.css('max-width') );
@@ -93,22 +101,34 @@ function nCarousel( opts ) {
     if( self.resizeTimer !== false ){
       clearTimeout(self.resizeTimer);
     }
-    self.resizeTimer = setTimeout($.proxy(self.windowResize, self), 100);
+    self.resizeTimer = setTimeout($.proxy(self.windowResize, self), 0);
   });
   
   //autoplay
-  if( 0 < this.opts.interval ) {
-    this.ticker = setInterval(function(){
-      self.animation( self.current + 1 );
-    }, this.opts.interval);
+  if( 0 < this.opts.interval ){
+    this.autoplay();
   }
 }
 
 
 nCarousel.prototype.setTouchThreshold = function(){
   if( !this.opts.swipe && !this.opts.draggable ) return false;
-  
   this.touchThreshold = this.$item.outerWidth(false) * (this.opts.touchThresholdMagnification / 100);
+}
+
+
+
+/*
+## autoplay
+*/
+
+nCarousel.prototype.autoplay = function(){
+  var self = this;
+  this.ticker = setInterval(function(){
+    if( (!self.opts.pauseWithMouseenter || !self.mouseenter) && !self.swiping ){
+      self.animation( self.current + 1 );
+    }
+  }, this.opts.interval);
 }
 
 
@@ -119,7 +139,7 @@ nCarousel.prototype.setTouchThreshold = function(){
 
 nCarousel.prototype.windowResize = function(){
   this.windowWidth = this.$window.width();
-  if( this.maxWidth < this.$window.width() ){
+  if( this.maxWidth < this.windowWidth ){
     if( this.activeResponsive ) {
       this.activeResponsive = false;
       this.resetItemWidth('auto');
@@ -129,7 +149,6 @@ nCarousel.prototype.windowResize = function(){
   var self = this;
   this.activeResponsive = true;
   this.resetItemWidth( this.$viewport.width() );
-  //this.resetItemWidth( this.$parent.width() );
 }
 
 
@@ -145,8 +164,7 @@ nCarousel.prototype.resetItemWidth = function( width ){
   
   this.$items
     .css({
-      marginLeft: (this.opts.surplus * -1 * this.itemWidth * this.current) + this.marginCorrect,
-      width: (this.opts.surplus * 2 + 1) * this.itemsWidth
+      marginLeft: (this.opts.surplus * -1 * this.itemWidth * this.current) + this.marginCorrect
     });
   
   this.setTouchThreshold();
@@ -161,14 +179,20 @@ nCarousel.prototype.resetItemWidth = function( width ){
 nCarousel.prototype.init = function(){
   var self = this;
   this.$el.addClass('nCarousel');
-  this.$el.html(
-    '<div class="nCarousel__viewport">'
-    + this.backup.html
-    + '</div>'
-  );
+  
+  if( 1 > this.$el.find('.nCarousel__viewport').length ){
+    this.backup.html = this.$el.html();
+    this.$el.empty();
+    this.$el.html(
+      '<div class="nCarousel__viewport">'
+      + this.backup.html
+      + '</div>'
+    );
+  }
   
   this.$viewport = this.$el.children('.nCarousel__viewport');
   this.$items = this.$viewport.children();
+  this.$items.addClass('nCarousel__items');
   this.$item = this.$items.children();
   this.$item.addClass('nCarousel__item');
   
@@ -179,8 +203,7 @@ nCarousel.prototype.init = function(){
   
   this.$items
     .css({
-      marginLeft: (this.opts.surplus * -1 * this.itemsWidth) + this.marginCorrect,
-      width: (this.opts.surplus * 2 + 1) * this.itemsWidth
+      marginLeft: (this.opts.surplus * -1 * this.itemsWidth) + this.marginCorrect
     });
   
   for( var i=0; i < this.opts.surplus * 2; i++ ){
@@ -344,6 +367,7 @@ nCarousel.prototype.setSwipeEvent = function(){
 nCarousel.prototype.swipeStart = function(event){
   event.preventDefault();
   if( this.lock ) return false;
+  this.swiping = true;
   
   var pos = Position(event);
   this.touchStartX = pos.x;
@@ -380,6 +404,8 @@ nCarousel.prototype.swipeMove = function(event){
 */
 
 nCarousel.prototype.swipeEnd = function(event){
+  this.swiping = false;
+  
   //off move & end
   if( this.opts.swipe ) {
     this.$items.off('touchmove.ncarousel');

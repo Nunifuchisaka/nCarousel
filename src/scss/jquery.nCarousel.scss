@@ -10,10 +10,15 @@
       margin: 0;
     }
     #{&}__items {
-      overflow: hidden;
+      overflow: visible;
+      position: relative;
+      letter-spacing: -.4em;
+      white-space: nowrap;
     }
     #{&}__item {
-      float: left;
+      display: inline-block;
+      white-space: normal;
+      vertical-align: top;
       img {
         vertical-align: top;
       }

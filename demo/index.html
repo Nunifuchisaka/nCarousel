@@ -9,21 +9,23 @@
 <link rel="stylesheet" href="../dst/jquery.nCarousel.css">
 <link rel="stylesheet" href="demo.css" />
 <style>
+.wrapper_1 {
+  overflow: hidden;
+  width: 100%;
+}
+
 .carousel-1 {
   max-width: 800px;
   margin: 80px auto;
 }
-.carousel-1__items {
-  overflow: hidden;
-  width: 10000px;
+.carousel-1 .nCarousel__items {
   margin-left: -12px;
 }
-.carousel-1__item {
-  float: left;
+.carousel-1 .nCarousel__item {
   width: 800px;
   margin: 0 12px;
 }
-.carousel-1__item img {
+.carousel-1 .nCarousel__item img {
   width: 100%;
   height: auto;
 }
@@ -37,23 +39,25 @@
 </head>
 <body>
 
+<div class="wrapper_1">
+
 
 <h1>nCarousel</h1>
 
 
 <div id="demo-1" class="carousel-1">
-  <div class="carousel-1__items">
-    <div class="carousel-1__item">
+  <div class="nCarousel__items">
+    <div class="nCarousel__item">
       <a href="hoge/">
         <img src="//placehold.jp/800x400.png" alt="" />
       </a>
     </div>
-    <div class="carousel-1__item">
+    <div class="nCarousel__item">
       <a href="hoge/">
         <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
       </a>
     </div>
-    <div class="carousel-1__item">
+    <div class="nCarousel__item">
       <a href="hoge/">
         <img src="//placekitten.com/800/400" alt="" />
       </a>
@@ -80,15 +84,17 @@ $(function(){
 
 
 <div id="demo-2" class="carousel-1">
-  <div class="carousel-1__items">
-    <div class="carousel-1__item">
-      <img src="//placehold.jp/800x400.png" alt="" />
-    </div>
-    <div class="carousel-1__item">
-      <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
-    </div>
-    <div class="carousel-1__item">
-      <img src="//placekitten.com/800/400" alt="" />
+  <div class="nCarousel__viewport">
+    <div class="nCarousel__items">
+      <div class="nCarousel__item">
+        <img src="//placehold.jp/800x400.png" alt="" />
+      </div>
+      <div class="nCarousel__item">
+        <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
+      </div>
+      <div class="nCarousel__item">
+        <img src="//placekitten.com/800/400" alt="" />
+      </div>
     </div>
   </div>
 </div>
@@ -128,14 +134,14 @@ $(function(){
   <div id="tab__1" class="demo-tab-1__contents">
     <p style="text-align: center">1</p>
     <div id="tab-carousel-1" class="carousel-1" style="margin:0 auto">
-      <div class="carousel-1__items">
-        <div class="carousel-1__item">
+      <div class="nCarousel__items">
+        <div class="nCarousel__item">
           <img src="//placehold.jp/800x400.png" alt="" />
         </div>
-        <div class="carousel-1__item">
+        <div class="nCarousel__item">
           <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
         </div>
-        <div class="carousel-1__item">
+        <div class="nCarousel__item">
           <img src="//placekitten.com/800/400" alt="" />
         </div>
       </div>
@@ -156,14 +162,14 @@ $(function(){
   <div id="tab__2" class="demo-tab-1__contents">
     <p style="text-align: center">2</p>
     <div id="tab-carousel-2" class="carousel-1" style="margin:0 auto">
-      <div class="carousel-1__items">
-        <div class="carousel-1__item">
+      <div class="nCarousel__items">
+        <div class="nCarousel__item">
           <img src="//placehold.jp/800x400.png" alt="" />
         </div>
-        <div class="carousel-1__item">
+        <div class="nCarousel__item">
           <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
         </div>
-        <div class="carousel-1__item">
+        <div class="nCarousel__item">
           <img src="//placekitten.com/800/400" alt="" />
         </div>
       </div>
@@ -184,14 +190,14 @@ $(function(){
   <div id="tab__3" class="demo-tab-1__contents">
     <p style="text-align: center">3</p>
     <div id="tab-carousel-3" class="carousel-1" style="margin:0 auto">
-      <div class="carousel-1__items">
-        <div class="carousel-1__item">
+      <div class="nCarousel__items">
+        <div class="nCarousel__item">
           <img src="//placehold.jp/800x400.png" alt="" />
         </div>
-        <div class="carousel-1__item">
+        <div class="nCarousel__item">
           <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
         </div>
-        <div class="carousel-1__item">
+        <div class="nCarousel__item">
           <img src="//placekitten.com/800/400" alt="" />
         </div>
       </div>
@@ -210,6 +216,9 @@ $(function(){
     </script>
   </div>
 </div><!-- /.demo-tab-1 -->
+
+
+</div><!-- /.wrapper_1 -->
 
 
 </body>
