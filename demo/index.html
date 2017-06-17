@@ -14,6 +14,32 @@
   width: 100%;
 }
 
+
+/*
+## .carousel_2
+*/
+
+.carousel_2 {
+  max-width: 800px;
+  margin: 80px auto;
+}
+.carousel_2 .nCarousel__items {
+  margin-left: -12px;
+}
+.carousel_2 .nCarousel__item {
+  width: 800px;
+  margin: 0 12px;
+}
+.carousel_2 .nCarousel__item img {
+  width: 100%;
+  height: auto;
+}
+
+
+/*
+## .carousel-1
+*/
+
 .carousel-1 {
   max-width: 800px;
   margin: 80px auto;
@@ -216,6 +242,59 @@ $(function(){
     </script>
   </div>
 </div><!-- /.demo-tab-1 -->
+
+
+<hr />
+
+
+<div class="carousel_2">
+  <div class="nCarousel__viewport">
+    <div class="nCarousel__items">
+      <div class="nCarousel__item">
+        <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
+      </div>
+      <div class="nCarousel__item">
+        <img src="//placekitten.com/800/400" alt="" />
+        
+      </div>
+      <div class="nCarousel__item">
+        <img src="//placehold.jp/800x400.png" alt="" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="carousel_2">
+  <div class="nCarousel__viewport">
+    <div class="nCarousel__items">
+      <div class="nCarousel__item">
+        <img src="//placekitten.com/800/400" alt="" />
+      </div>
+      <div class="nCarousel__item">
+        <img src="//placehold.jp/800x400.png" alt="" />
+      </div>
+      <div class="nCarousel__item">
+        <img src="//fakeimg.pl/800x400/282828/eae0d0/" alt="" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(function(){
+  
+  $(window).load(function(){
+    $(".carousel_2").nCarousel({
+      duration: 400
+      ,easing: "swing"
+      ,surplus: 1
+      ,interval: 2000
+      ,thumbnail: true
+    });
+  });
+  
+});
+</script>
 
 
 </div><!-- /.wrapper_1 -->

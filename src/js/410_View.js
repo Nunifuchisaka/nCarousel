@@ -213,8 +213,8 @@ nCarousel.prototype.init = function(){
   //add pointers
   if(this.opts.pointers){
     var pointersHTML = '<div class="nCarousel__pointers">';
-    for( var i=0; i<this.$item.length; i++ ){
-      pointersHTML += '<div class="nCarousel__pointer"></div>'
+    for( var i=1; i<=this.$item.length; i++ ){
+      pointersHTML += '<div class="nCarousel__pointer">'+ i +'</div>';
     }
     pointersHTML += '</div>';
     this.$el.append(pointersHTML);
