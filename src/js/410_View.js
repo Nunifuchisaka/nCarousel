@@ -41,7 +41,8 @@ function nCarousel( opts ) {
     draggable: true,
     pointers: true,
     touchThresholdMagnification: 10,
-    pauseWithMouseenter: true
+    pauseWithMouseenter: true,
+    resetItemWidth: "auto"
   }, opts);
   
   /*
@@ -129,7 +130,7 @@ nCarousel.prototype.windowResize = function(){
   if( this.maxWidth < this.windowWidth ){
     if( this.activeResponsive ) {
       this.activeResponsive = false;
-      this.resetItemWidth('auto');
+      this.resetItemWidth( this.opts.resetItemWidth );
     }
     return;
   }
